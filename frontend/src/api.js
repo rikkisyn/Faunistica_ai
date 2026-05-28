@@ -24,6 +24,34 @@ const apiService = {
     }
   },
 
+  startRegistration: async (username, password) => {
+    try {
+      const response = await api.post("/api/auth/register", { username, password });
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 409) {
+        throw new Error("username_taken");
+      } else if (error.response?.status === 400) {
+        throw new Error("invalid_registration");
+      }
+      throw error;
+    }
+  },
+
+  pollRegistrationStatus: async (code, timeout = 25) => {
+    try {
+      const response = await api.get("/api/auth/register/status", {
+        params: { code, timeout },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        throw new Error("registration_not_found");
+      }
+      throw error;
+    }
+  },
+
   logout: async () => {
     const response = await api.post("/api/auth/logout");
     return response.data;

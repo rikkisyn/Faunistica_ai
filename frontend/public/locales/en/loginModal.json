@@ -3,18 +3,35 @@
     "wrong_pass": "Wrong password. Try again.",
     "no_user": "User not found.",
     "request_limit": "The number of attempts has been exceeded. Try again in one minute.",
-    "login_error": "Login error. Try again later."
+    "login_error": "Login error. Try again later.",
+    "username_taken": "This username is already taken.",
+    "invalid_registration": "Please check your username and password.",
+    "registration_error": "Registration error. Try again later.",
+    "code_expired": "Registration code expired. Request a new one."
   },
 
   "modal": {
-    "tg_title": "Register via Telegram",
-    "tg_text": "Register using our Telegram bot",
+    "login_title": "Log in",
+    "login_text": "Log in using your account credentials",
+    "register_title": "Register",
+    "register_text": "Create an account and confirm it via our Telegram bot",
     "tg_qr": "Point your camera or click on the QR code",
-    "tg_data": "Data from Telegram:",
+    "tg_data": "Account details:",
     "username": "Enter username",
-    "pass": "Enter the password you received from the bot",
-    "loading": "Login...",
-    "button": "Login",
-    "issue": "Didn't get the password? Go to the bot and press /start"
+    "pass": "Enter your password",
+    "loading_login": "Logging in...",
+    "loading_register": "Requesting code...",
+    "button_login": "Login",
+    "button_register": "Get code",
+    "issue": "Didn't get the password? Go to the bot and press /auth",
+    "register_issue": "After getting the code, send it to the bot with /confirm",
+    "code_label": "Confirmation code",
+    "code_instruction": "Send it to the bot with /confirm <code>",
+    "code_waiting": "Waiting for confirmation...",
+    "code_confirmed": "Registration confirmed. You can now log in.",
+    "code_expired": "Code expired. Request a new one.",
+    "code_error": "Couldn't check the code status. Try again.",
+    "switch_to_register": "Need an account? Register",
+    "switch_to_login": "Already have an account? Log in"
   }
 }

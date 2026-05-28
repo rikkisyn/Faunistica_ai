@@ -72,23 +72,31 @@ async def get_code(message: Message, bot: Bot) -> None:
                     disable_web_page_preview=True,
                 )
 
-            password = generate_secure_password()
-            hashed_password = get_password_hash(password)
+            should_reset_password = user.hash is None
+            if user.hash_date is not None:
+                now = datetime.now()
+                minutes_since_hash = (now - user.hash_date).total_seconds() / 60
+                if minutes_since_hash > settings.PASSWORD_EXPIRE_MINUTES:
+                    should_reset_password = True
 
-            await update_user(
-                session,
-                message.from_user.id,
-                UserUpdate(
-                    hash=hashed_password,
-                    hash_date=datetime.now(),
-                ),
-            )
+            if should_reset_password:
+                password = generate_secure_password()
+                hashed_password = get_password_hash(password)
 
-            await message.answer(
-                Messages.new_password(password, user.name),
-                parse_mode="Markdown",
-                disable_web_page_preview=True,
-            )
+                await update_user(
+                    session,
+                    message.from_user.id,
+                    UserUpdate(
+                        hash=hashed_password,
+                        hash_date=datetime.now(),
+                    ),
+                )
+
+                await message.answer(
+                    Messages.new_password(password, user.name),
+                    parse_mode="Markdown",
+                    disable_web_page_preview=True,
+                )
 
         await update_user(
             session,

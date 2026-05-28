@@ -54,6 +54,27 @@ class User(Base):
     token_version: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
 
+class PendingRegistration(Base):
+    __tablename__ = "pending_registrations"
+
+    id: Mapped[int] = mapped_column(
+        BigInteger,
+        primary_key=True,
+        server_default=Identity(),
+    )
+    code: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    username: Mapped[str] = mapped_column(String(255))
+    password_hash: Mapped[str] = mapped_column(String(255))
+    status: Mapped[str] = mapped_column(String(32), server_default="pending")
+    created_at: Mapped[datetime_type] = mapped_column(
+        TIMESTAMP, server_default=func.now()
+    )
+    confirmed_at: Mapped[datetime_type | None] = mapped_column(TIMESTAMP)
+    telegram_id: Mapped[int | None] = mapped_column(BigInteger)
+    telegram_username: Mapped[str | None] = mapped_column(String(255))
+    telegram_name: Mapped[str | None] = mapped_column(String(255))
+
+
 class Publication(Base):
     __tablename__ = "publs"
 
