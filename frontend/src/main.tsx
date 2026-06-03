@@ -24,7 +24,12 @@ async function verifyAuthInBackground(setNetworkError: (value: boolean) => void)
 
         if (response.ok) {
             const user: Types.UserInfo = await response.json();
-            store.dispatch(login(user));
+            store.dispatch(
+                login({
+                    user_id: user.user_id,
+                    username: user.username ?? user.name ?? '',
+                }),
+            );
             return;
         }
 

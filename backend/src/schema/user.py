@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 from core.enums import UserState
 from schema.common import UNSET, Unset
@@ -35,8 +35,17 @@ class UserFull(UserMinimal):
 
 
 class UserUpdateMe(BaseModel):
-    lng: UserLanguage | None = None
+    age: int | None = None
+    language: UserLanguage | None = Field(
+        default=None, validation_alias=AliasChoices("language", "lng")
+    )
+    comm: str | None = None
+    sex: str | None = None
+    rating: int | None = None
     email: str | None = None
+    region: str | None = None
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class UserLookupResponse(BaseModel):

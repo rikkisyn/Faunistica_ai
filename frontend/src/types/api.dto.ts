@@ -10,7 +10,8 @@ export interface UserLoginResponse {
 
 export interface UserInfo {
     user_id: number;
-    username: string;
+    username?: string;
+    name?: string;
 }
 
 export interface RecordBelonging {

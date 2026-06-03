@@ -12,7 +12,11 @@ from core.dependencies import get_session
 from core.enums import PendingStatus, UserState
 from core.exceptions import HandlerError
 from core.model import User
-from repository.registration import get_pending_by_code, update_pending_by_code
+from repository.registration import (
+    delete_pending_by_code,
+    get_pending_by_code,
+    update_pending_by_code,
+)
 from repository.user import find_user_by_username, get_user, update_user
 from schema.user import UserUpdate
 from service.registration import is_registration_expired
@@ -37,7 +41,7 @@ async def handle_code_input(message: Message, state: FSMContext) -> None:
         raise HandlerError
     code = message.text.strip()
     async for session in get_session():
-        pending = await get_pending_by_code(session, code)
+        pending = await get_pending_by_code(session, code, allow_expired=True)
         if pending is None:
             await message.answer(Messages.confirmation_code_invalid())
             return
@@ -45,7 +49,7 @@ async def handle_code_input(message: Message, state: FSMContext) -> None:
         if pending.status == PendingStatus.PENDING and is_registration_expired(
             pending.created_at
         ):
-            await update_pending_by_code(session, code, status="expired")
+            await delete_pending_by_code(session, code)
             await session.commit()
             await message.answer(Messages.confirmation_code_expired())
             return
@@ -80,6 +84,9 @@ async def handle_code_input(message: Message, state: FSMContext) -> None:
                     reg_stat=UserState.REG_COMPLETED,
                     hash=pending.password_hash,
                     hash_date=now,
+                    age=pending.age,
+                    lng=pending.language,
+                    comm=pending.comm,
                     reg_end=now,
                 )
             )
@@ -94,6 +101,9 @@ async def handle_code_input(message: Message, state: FSMContext) -> None:
                     reg_stat=UserState.REG_COMPLETED,
                     hash=pending.password_hash,
                     hash_date=now,
+                    age=pending.age,
+                    lng=pending.language,
+                    comm=pending.comm,
                     reg_end=now,
                 ),
             )
@@ -101,7 +111,7 @@ async def handle_code_input(message: Message, state: FSMContext) -> None:
         await update_pending_by_code(
             session,
             code,
-            status="confirmed",
+            status=PendingStatus.CONFIRMED,
             confirmed_at=now,
             telegram_id=message.from_user.id,
             telegram_username=tlg_username,

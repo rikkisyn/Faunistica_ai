@@ -105,8 +105,8 @@ class UserState(IntEnum):
 
 class PendingStatus(IntEnum):
     PENDING = 0
-    EXPIRED = 1
     CONFIRMED = 2
+    NOT_FOUND = 3
 
 
 class PendingStatusType(TypeDecorator):
@@ -129,4 +129,8 @@ class PendingStatusType(TypeDecorator):
     ) -> "PendingStatus | None":
         if value is None:
             return PendingStatus.PENDING
-        return PendingStatus(value)
+        try:
+            return PendingStatus(value)
+        except ValueError:
+            logger.warning("Unknown pending status value: %s", value)
+            return PendingStatus.PENDING
