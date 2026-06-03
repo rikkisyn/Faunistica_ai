@@ -80,6 +80,12 @@ class DataSettings(CamelCaseSettings):
     URAL_BORDER_PATH: Path = Path("data/ural_border.geojson")
 
 
+class RegistrationSettings(CamelCaseSettings):
+    REGISTRATION_EXPIRE_SECONDS: int = 15 * 60  # 15min
+    REGISTRATION_POLL_INTERVAL_SECONDS: int = 1
+    REGISTRATION_POLL_TIMEOUT_SECONDS: int = 25
+
+
 class Settings(
     DatabaseSettings,
     SecuritySettings,
@@ -87,6 +93,7 @@ class Settings(
     LoggingSettings,
     AppSettings,
     DataSettings,
+    RegistrationSettings,
 ):
     model_config = SettingsConfigDict(
         yaml_file=Path("config.yaml"),
